@@ -42,20 +42,20 @@ switch ($requestMethod) {
 
 function fetchAllTourCodes($db_handle) {
     $query = "SELECT * FROM tour_code";
-    $tourCodes = $db_handle->runQuery($query);
+    $tourCodes = $db_handle->selectQuery($query);
     echo json_encode($tourCodes ?: []);
 }
 
 function fetchTourCodeById($db_handle, $tourCodeId) {
     $query = "SELECT * FROM tour_code WHERE tour_code_id = $tourCodeId";
-    $tourCode = $db_handle->runQuery($query);
+    $tourCode = $db_handle->selectQuery($query);
     echo json_encode($tourCode ?: ["error" => "Tour Code not found"]);
 }
 
 function createTourCode($db_handle, $data) {
     $query = "INSERT INTO tour_code (code, discount, status, inserted_at) 
               VALUES ('{$data['code']}', '{$data['discount']}', '{$data['status']}', NOW())";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->insertQuery($query);
     if ($result) {
         echo json_encode(["success" => true, "tour_code_id" => $db_handle->lastInsertId()]);
     } else {
@@ -69,7 +69,7 @@ function updateTourCode($db_handle, $data) {
               discount = '{$data['discount']}', 
               status = '{$data['status']}' 
               WHERE tour_code_id = {$data['tour_code_id']}";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->updateQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {
@@ -79,7 +79,7 @@ function updateTourCode($db_handle, $data) {
 
 function deleteTourCode($db_handle, $tourCodeId) {
     $query = "DELETE FROM tour_code WHERE tour_code_id = $tourCodeId";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->deleteQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {

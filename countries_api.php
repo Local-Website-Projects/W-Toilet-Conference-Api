@@ -42,20 +42,20 @@ switch ($requestMethod) {
 
 function fetchAllCountries($db_handle) {
     $query = "SELECT * FROM countries";
-    $countries = $db_handle->runQuery($query);
+    $countries = $db_handle->selectQuery($query);
     echo json_encode($countries ?: []);
 }
 
 function fetchCountryById($db_handle, $countryId) {
     $query = "SELECT * FROM countries WHERE id = $countryId";
-    $country = $db_handle->runQuery($query);
+    $country = $db_handle->selectQuery($query);
     echo json_encode($country ?: ["error" => "Country not found"]);
 }
 
 function createCountry($db_handle, $data) {
     $query = "INSERT INTO countries (country_name, nationality) 
               VALUES ('{$data['country_name']}', '{$data['nationality']}')";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->insertQuery($query);
     if ($result) {
         echo json_encode(["success" => true, "id" => $db_handle->lastInsertId()]);
     } else {
@@ -68,7 +68,7 @@ function updateCountry($db_handle, $data) {
               country_name = '{$data['country_name']}', 
               nationality = '{$data['nationality']}' 
               WHERE id = {$data['id']}";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->updateQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {
@@ -78,7 +78,7 @@ function updateCountry($db_handle, $data) {
 
 function deleteCountry($db_handle, $countryId) {
     $query = "DELETE FROM countries WHERE id = $countryId";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->deleteQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {

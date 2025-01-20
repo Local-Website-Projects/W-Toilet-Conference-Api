@@ -42,13 +42,13 @@ switch ($requestMethod) {
 
 function fetchAllTransactions($db_handle) {
     $query = "SELECT * FROM transactions";
-    $transactions = $db_handle->runQuery($query);
+    $transactions = $db_handle->selectQuery($query);
     echo json_encode($transactions ?: []);
 }
 
 function fetchTransactionById($db_handle, $transactionId) {
     $query = "SELECT * FROM transactions WHERE tran_id = $transactionId";
-    $transaction = $db_handle->runQuery($query);
+    $transaction = $db_handle->selectQuery($query);
     echo json_encode($transaction ?: ["error" => "Transaction not found"]);
 }
 
@@ -60,7 +60,7 @@ function createTransaction($db_handle, $data) {
                   '{$data['store_amount']}', '{$data['bank_transaction_id']}', '{$data['card_type']}', 
                   '{$data['transaction_date']}', NOW()
               )";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->insertQuery($query);
     if ($result) {
         echo json_encode(["success" => true, "tran_id" => $db_handle->lastInsertId()]);
     } else {
@@ -79,7 +79,7 @@ function updateTransaction($db_handle, $data) {
               transaction_date = '{$data['transaction_date']}', 
               inserted_at = NOW() 
               WHERE tran_id = {$data['tran_id']}";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->updateQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {
@@ -89,7 +89,7 @@ function updateTransaction($db_handle, $data) {
 
 function deleteTransaction($db_handle, $transactionId) {
     $query = "DELETE FROM transactions WHERE tran_id = $transactionId";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->deleteQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {

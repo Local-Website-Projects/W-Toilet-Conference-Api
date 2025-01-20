@@ -42,13 +42,13 @@ switch ($requestMethod) {
 
 function fetchAllInvoices($db_handle) {
     $query = "SELECT * FROM invoice_data";
-    $invoices = $db_handle->runQuery($query);
+    $invoices = $db_handle->selectQuery($query);
     echo json_encode($invoices ?: []);
 }
 
 function fetchInvoiceById($db_handle, $invoiceId) {
     $query = "SELECT * FROM invoice_data WHERE invoice_id = $invoiceId";
-    $invoice = $db_handle->runQuery($query);
+    $invoice = $db_handle->selectQuery($query);
     echo json_encode($invoice ?: ["error" => "Invoice not found"]);
 }
 
@@ -69,7 +69,7 @@ function createInvoice($db_handle, $data) {
                   '{$data['tour_discount']}', 
                   '{$data['payment_status']}'
               )";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->insertQuery($query);
     if ($result) {
         echo json_encode(["success" => true, "invoice_id" => $db_handle->lastInsertId()]);
     } else {
@@ -91,7 +91,7 @@ function updateInvoice($db_handle, $data) {
               tour_discount = '{$data['tour_discount']}', 
               payment_status = '{$data['payment_status']}'
               WHERE invoice_id = {$data['invoice_id']}";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->updateQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {
@@ -101,7 +101,7 @@ function updateInvoice($db_handle, $data) {
 
 function deleteInvoice($db_handle, $invoiceId) {
     $query = "DELETE FROM invoice_data WHERE invoice_id = $invoiceId";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->deleteQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {

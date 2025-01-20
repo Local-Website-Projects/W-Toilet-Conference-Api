@@ -42,20 +42,20 @@ switch ($requestMethod) {
 
 function fetchAllAdmins($db_handle) {
     $query = "SELECT * FROM admin_login";
-    $admins = $db_handle->runQuery($query);
+    $admins = $db_handle->selectQuery($query);
     echo json_encode($admins ?: []);
 }
 
 function fetchAdminById($db_handle, $adminId) {
     $query = "SELECT * FROM admin_login WHERE admin_id = $adminId";
-    $admin = $db_handle->runQuery($query);
+    $admin = $db_handle->selectQuery($query);
     echo json_encode($admin ?: ["error" => "Admin not found"]);
 }
 
 function createAdmin($db_handle, $data) {
     $query = "INSERT INTO admin_login (admin_name, admin_email, admin_password) 
               VALUES ('{$data['admin_name']}', '{$data['admin_email']}', '{$data['admin_password']}')";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->insertQuery($query);
     if ($result) {
         echo json_encode(["success" => true, "admin_id" => $db_handle->lastInsertId()]);
     } else {
@@ -69,7 +69,7 @@ function updateAdmin($db_handle, $data) {
               admin_email = '{$data['admin_email']}', 
               admin_password = '{$data['admin_password']}'
               WHERE admin_id = {$data['admin_id']}";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->updateQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {
@@ -79,7 +79,7 @@ function updateAdmin($db_handle, $data) {
 
 function deleteAdmin($db_handle, $adminId) {
     $query = "DELETE FROM admin_login WHERE admin_id = $adminId";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->deleteQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {

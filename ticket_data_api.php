@@ -42,13 +42,13 @@ switch ($requestMethod) {
 
 function fetchAllTickets($db_handle) {
     $query = "SELECT * FROM ticket_data";
-    $tickets = $db_handle->runQuery($query);
+    $tickets = $db_handle->selectQuery($query);
     echo json_encode($tickets ?: []);
 }
 
 function fetchTicketById($db_handle, $ticketId) {
     $query = "SELECT * FROM ticket_data WHERE ticket_data_id = $ticketId";
-    $ticket = $db_handle->runQuery($query);
+    $ticket = $db_handle->selectQuery($query);
     echo json_encode($ticket ?: ["error" => "Ticket not found"]);
 }
 
@@ -66,7 +66,7 @@ function createTicket($db_handle, $data) {
                   '{$data['dietary']}', '{$data['accessibility']}', '{$data['language']}', '{$data['tours']}', 
                   '{$data['notification']}', '{$data['status']}', NOW(), NOW()
               )";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->insertQuery($query);
     if ($result) {
         echo json_encode(["success" => true, "ticket_data_id" => $db_handle->lastInsertId()]);
     } else {
@@ -103,7 +103,7 @@ function updateTicket($db_handle, $data) {
               status = '{$data['status']}', 
               updated_at = NOW() 
               WHERE ticket_data_id = {$data['ticket_data_id']}";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->updateQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {
@@ -113,7 +113,7 @@ function updateTicket($db_handle, $data) {
 
 function deleteTicket($db_handle, $ticketId) {
     $query = "DELETE FROM ticket_data WHERE ticket_data_id = $ticketId";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->deleteQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {

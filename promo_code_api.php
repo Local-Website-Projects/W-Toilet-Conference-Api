@@ -42,13 +42,13 @@ switch ($requestMethod) {
 
 function fetchAllPromos($db_handle) {
     $query = "SELECT * FROM promo_code";
-    $promos = $db_handle->runQuery($query);
+    $promos = $db_handle->selectQuery($query);
     echo json_encode($promos ?: []);
 }
 
 function fetchPromoById($db_handle, $promoId) {
     $query = "SELECT * FROM promo_code WHERE promo_id = $promoId";
-    $promo = $db_handle->runQuery($query);
+    $promo = $db_handle->selectQuery($query);
     echo json_encode($promo ?: ["error" => "Promo not found"]);
 }
 
@@ -60,7 +60,7 @@ function createPromo($db_handle, $data) {
                   '{$data['status']}', 
                   NOW()
               )";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->insertQuery($query);
     if ($result) {
         echo json_encode(["success" => true, "promo_id" => $db_handle->lastInsertId()]);
     } else {
@@ -74,7 +74,7 @@ function updatePromo($db_handle, $data) {
               discount = '{$data['discount']}', 
               status = '{$data['status']}' 
               WHERE promo_id = {$data['promo_id']}";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->updateQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {
@@ -84,7 +84,7 @@ function updatePromo($db_handle, $data) {
 
 function deletePromo($db_handle, $promoId) {
     $query = "DELETE FROM promo_code WHERE promo_id = $promoId";
-    $result = $db_handle->executeQuery($query);
+    $result = $db_handle->deleteQuery($query);
     if ($result) {
         echo json_encode(["success" => true]);
     } else {
